@@ -1,0 +1,9 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Product questions and ideas
+    url: https://github.com/ArmyWas/dsh-provider-passport/discussions
+    about: Ask questions, propose product ideas, or discuss an inconclusive result.
+  - name: Private security report
+    url: https://github.com/ArmyWas/dsh-provider-passport/security/advisories/new
+    about: Report a potential vulnerability without disclosing it publicly.
+

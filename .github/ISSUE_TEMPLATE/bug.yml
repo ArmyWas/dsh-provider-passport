@@ -1,0 +1,42 @@
+name: Plugin bug
+description: Report incorrect behavior in DSH Provider Passport itself.
+title: "[bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include credentials, headers, private endpoints, prompts, response bodies, or unredacted settings. Use private vulnerability reporting for security findings.
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Include DSH, plugin, Node.js, and operating-system versions.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Minimal reproduction
+      description: Prefer a local mock endpoint. Describe only the steps needed to reproduce the plugin behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I removed all credentials and private data from this report.
+          required: true
+

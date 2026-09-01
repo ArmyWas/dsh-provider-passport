@@ -1,0 +1,71 @@
+name: Compatibility report
+description: Share a redacted result from a real third-party, enterprise, or self-hosted endpoint.
+title: "[compat]: "
+labels: [compatibility, evidence]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for contributing real-world evidence. Never post credentials, authorization headers, a full private endpoint, proprietary prompts, or response bodies.
+  - type: input
+    id: dsh_version
+    attributes:
+      label: DSH version
+      description: Run `dsh --version` or `npx @deepseek-ai/dsh --version`.
+      placeholder: 0.1.1-rc.2
+    validations:
+      required: true
+  - type: input
+    id: plugin_version
+    attributes:
+      label: Plugin version
+      placeholder: 0.1.0-preview.1
+    validations:
+      required: true
+  - type: dropdown
+    id: endpoint_category
+    attributes:
+      label: Endpoint category
+      options:
+        - Hosted third-party vendor
+        - Enterprise gateway or proxy
+        - Self-hosted proxy or router
+        - Local model server
+        - Other or unknown
+    validations:
+      required: true
+  - type: dropdown
+    id: prior_failure
+    attributes:
+      label: Did a normal Harness task fail before the preflight?
+      options:
+        - "Yes"
+        - "No"
+        - "Not tested"
+    validations:
+      required: true
+  - type: textarea
+    id: redacted_report
+    attributes:
+      label: Redacted report
+      description: Paste the JSON produced by “Copy redacted report”. Inspect it before posting.
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: observed_result
+    attributes:
+      label: What happened after apply and real-Harness verification?
+      description: State whether verification passed, failed and auto-rolled back, or was not attempted. Do not paste response bodies.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I reviewed this submission and removed credentials, headers, private endpoints, model identity, prompts, response bodies, and organization/account data.
+          required: true
+        - label: I understand that this public report may be used as anonymized compatibility evidence in project documentation.
+          required: true
+

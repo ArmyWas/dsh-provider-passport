@@ -1,0 +1,68 @@
+{
+  "name": "dsh-provider-passport",
+  "version": "0.1.0-preview.1",
+  "description": "Review-first request-dialect preflight for custom DeepSeek Harness providers.",
+  "type": "module",
+  "main": "lib/index.js",
+  "author": "ArmyWas",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArmyWas/dsh-provider-passport.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ArmyWas/dsh-provider-passport/issues"
+  },
+  "homepage": "https://github.com/ArmyWas/dsh-provider-passport#readme",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./probe": "./lib/probe.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md",
+    "README.zh-CN.md",
+    "PRIVACY.md",
+    "SECURITY.md",
+    "CHANGELOG.md",
+    "docs/TESTER_GUIDE.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "harness-e2e": "node test/harness-plugin-e2e.js",
+    "visual-fixture": "node test/manual-fixture.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-settings-plugins",
+        "@deepseek-ai/dsh-client-ui-slots"
+      ],
+      "platform": "web"
+    }
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "plugin",
+    "openai-compatible",
+    "provider",
+    "preflight"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "tag": "preview"
+  }
+}
