@@ -9,6 +9,7 @@
 - Add the protocol policy and blocked reason to redacted community reports.
 - Explain skipped routes and blocked protocol/vendor-managed cases in the Web card.
 - Add regression coverage for ambiguous routes, unsupported fields, and zero-request exclusion.
+- Move CI actions to their current Node 24-based major versions.
 
 ## 0.1.0-preview.1 — 2026-09-02
 
