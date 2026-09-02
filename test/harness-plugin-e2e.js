@@ -40,11 +40,14 @@ async function run(child) {
 
 async function installPlugin(cli, packageRoot, root, dshHome) {
   await mkdir(dshHome, { recursive: true })
-  await run(spawn(process.execPath, [
+  const packageSpec = process.env.DPP_PACKAGE_SPEC?.trim() || `link:${packageRoot}`
+  const args = [
     cli,
     'plugin', '--profile', 'web',
-    'add', `link:${packageRoot}`, '--offline', '--ignore-scripts',
-  ], {
+    'add', packageSpec, '--ignore-scripts',
+  ]
+  if (packageSpec.startsWith('link:')) args.push('--offline')
+  await run(spawn(process.execPath, args, {
     cwd: root,
     env: environment(root, dshHome),
     stdio: ['ignore', 'pipe', 'pipe'],
@@ -264,6 +267,7 @@ async function main() {
     console.log(JSON.stringify({
       experiment: 'dsh-provider-passport-real-bundle-e2e-v1',
       dshVersion,
+      packageSource: process.env.DPP_PACKAGE_SPEC ? 'public-registry' : 'local-link',
       bundleLoaded: true,
       providersListed: listed.providers.length,
       protocolGuard: listed.protocolGuard,
