@@ -1,6 +1,6 @@
 {
   "name": "dsh-provider-passport",
-  "version": "0.1.0-preview.1",
+  "version": "0.1.0-preview.2",
   "description": "Review-first request-dialect preflight for custom DeepSeek Harness providers.",
   "type": "module",
   "main": "lib/index.js",

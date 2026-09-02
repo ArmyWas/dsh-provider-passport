@@ -100,6 +100,7 @@ test('blocks safely when neither bounded token field is accepted', async () => {
   await gateway({ maxTokens: false, maxCompletionTokens: false }, async (baseURL) => {
     const report = await probeDialect({ baseURL, model: 'unknown-dialect' })
     assert.equal(report.status, 'blocked')
+    assert.equal(report.blockedReason, 'base-request-shape-unresolved')
     assert.equal(report.requestBudget.used, 2)
     assert.deepEqual(report.proposal, {})
   })

@@ -1,7 +1,39 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { modelsWithProposal, verifyThroughHarness } from '../lib/index.js'
+import {
+  modelsWithProposal,
+  proposalFieldsAllowed,
+  routeProtocolDecision,
+  verifyThroughHarness,
+} from '../lib/index.js'
+
+test('requires an explicit route-level Chat Completions protocol', () => {
+  assert.deepEqual(routeProtocolDecision({ baseURL: 'https://example.test/v1', api: 'openai-completions' }), {
+    eligible: true,
+    api: 'openai-completions',
+  })
+  assert.deepEqual(routeProtocolDecision({ baseURL: 'https://example.test/v1' }), {
+    eligible: false,
+    reason: 'api-not-explicit',
+  })
+  assert.deepEqual(routeProtocolDecision({ baseURL: 'https://example.test/v1', api: 'openai-responses' }), {
+    eligible: false,
+    reason: 'unsupported-api',
+  })
+})
+
+test('refuses proposal fields outside the reviewed offered subset', () => {
+  assert.equal(proposalFieldsAllowed({
+    maxTokensField: 'max_tokens',
+    supportsDeveloperRole: false,
+    supportsStore: false,
+    supportsReasoningEffort: false,
+    supportsUsageInStreaming: false,
+  }), true)
+  assert.equal(proposalFieldsAllowed({ openRouterRouting: true }), false)
+  assert.equal(proposalFieldsAllowed({ sessionAffinityFormat: 'header' }), false)
+})
 
 test('applies proposal only to the selected model and preserves other rows', () => {
   const before = [

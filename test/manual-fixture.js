@@ -197,6 +197,12 @@ async function main() {
       '          reasoningEfforts:',
       '            off:',
       '            high: high',
+      '    openai:',
+      '      displayName: Ambiguous catalog fixture',
+      '      apiKeyEnv: MOCK_API_KEY',
+      `      baseURL: ${gateway.baseURL}`,
+      '      models:',
+      '        - id: gpt-4.1',
       '',
     ].join('\n'), 'utf8')
 

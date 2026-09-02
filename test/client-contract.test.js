@@ -41,6 +41,12 @@ test('client card is keyed to the settings namespace dispatched by the Harness U
     schemaVersion: 'dsh.provider-passport.v1',
     reportId: 'private-report-id',
     status: 'ready',
+    compatibilityPolicy: {
+      api: 'openai-completions',
+      resolution: 'explicit-route-api',
+      proposalFields: ['supportsDeveloperRole'],
+      configuresCatalogWithheldFields: false,
+    },
     target: { baseURL: 'https://private.example/v1', model: 'private-model' },
     proposal: { supportsDeveloperRole: false },
     probes: [{
@@ -53,7 +59,9 @@ test('client card is keyed to the settings namespace dispatched by the Harness U
   }, true)
   const serialized = JSON.stringify(evidence)
   assert.equal(evidence.harnessVerification, 'passed')
-  assert.equal(evidence.plugin.version, '0.1.0-preview.1')
+  assert.equal(evidence.plugin.version, '0.1.0-preview.2')
+  assert.equal(evidence.compatibilityPolicy.api, 'openai-completions')
+  assert.equal(evidence.compatibilityPolicy.configuresCatalogWithheldFields, false)
   assert(!serialized.includes('private.example'))
   assert(!serialized.includes('private-model'))
   assert(!serialized.includes('private-report-id'))

@@ -187,6 +187,12 @@ async function main() {
       '          reasoningEfforts:',
       '            off:',
       '            high: high',
+      '    openai:',
+      '      displayName: Ambiguous catalog fixture',
+      '      apiKeyEnv: MOCK_API_KEY',
+      `      baseURL: ${gateway.baseURL}`,
+      '      models:',
+      '        - id: gpt-4.1',
       '',
     ].join('\n'), 'utf8')
 
@@ -202,6 +208,19 @@ async function main() {
     assert.equal(listed.ok, true)
     assert.equal(listed.providers.length, 1)
     assert.equal(listed.providers[0].id, 'compat-probe')
+    assert.equal(listed.protocolGuard.requiredApi, 'openai-completions')
+    assert.equal(listed.protocolGuard.resolution, 'explicit-route-api')
+    assert.equal(listed.protocolGuard.excludedRoutes.apiNotExplicit, 1)
+
+    const requestsBeforeExcludedProbe = gateway.shapes.length
+    const excluded = await post(launch.origin, '/api/dsh-provider-passport/probe', cookie, {
+      provider: 'openai',
+      model: 'gpt-4.1',
+      confirmed: true,
+    })
+    assert.deepEqual(excluded, { ok: false, error: 'provider-or-model-not-found' })
+    const excludedProbeRequests = gateway.shapes.length - requestsBeforeExcludedProbe
+    assert.equal(excludedProbeRequests, 0)
 
     const probed = await post(launch.origin, '/api/dsh-provider-passport/probe', cookie, {
       provider: 'compat-probe',
@@ -210,6 +229,18 @@ async function main() {
     })
     assert.equal(probed.ok, true)
     assert.equal(probed.report.status, 'ready')
+    assert.deepEqual(probed.report.compatibilityPolicy, {
+      api: 'openai-completions',
+      resolution: 'explicit-route-api',
+      proposalFields: [
+        'maxTokensField',
+        'supportsDeveloperRole',
+        'supportsStore',
+        'supportsReasoningEffort',
+        'supportsUsageInStreaming',
+      ],
+      configuresCatalogWithheldFields: false,
+    })
     assert.deepEqual(probed.report.proposal, {
       maxTokensField: 'max_tokens',
       supportsDeveloperRole: false,
@@ -235,6 +266,8 @@ async function main() {
       dshVersion,
       bundleLoaded: true,
       providersListed: listed.providers.length,
+      protocolGuard: listed.protocolGuard,
+      excludedProbeRequests,
       probeStatus: probed.report.status,
       proposedFields: Object.keys(probed.report.proposal).sort(),
       requestBudget: probed.report.requestBudget,

@@ -6,6 +6,7 @@ The goal is to learn whether real third-party, enterprise, or self-hosted OpenAI
 
 1. Update to the newest `preview` version of DSH Provider Passport.
 2. In Harness, confirm that the custom provider and model already exist.
+   The provider route must explicitly declare `api: openai-completions`; an omitted route API is excluded because its models may inherit different installed-catalog protocols.
 3. Open **Settings → Plugins → Provider compatibility passport**.
 4. Read the displayed request and cost budget.
 5. Select the provider/model and confirm the preflight.
@@ -41,5 +42,6 @@ If the copied report appears to contain any of the above, do not post it. Open a
 - `partial`: some pairs were inconclusive; discuss before applying.
 - `blocked`: neither bounded token-field form worked, so the plugin stopped without writing settings.
 
-One report is evidence of a concrete compatibility case, not proof that every endpoint from the same vendor behaves identically.
+For `blocked`, do not assume the endpoint merely needs another `compat` switch. It may speak another wire protocol or depend on a catalog-managed field that Harness intentionally withholds from profile configuration. The plugin reports that boundary but never proposes a withheld field.
 
+One report is evidence of a concrete compatibility case, not proof that every endpoint from the same vendor behaves identically.

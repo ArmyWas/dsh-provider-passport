@@ -33,6 +33,8 @@ npx @deepseek-ai/dsh web
 
 进入 **设置 → 插件**，展开 **提供方兼容护照**，选择一个自定义 OpenAI Chat Completions 模型，阅读请求预算并确认预检。
 
+路由必须在设置中显式声明 `api: openai-completions`。当 `api` 省略时，Harness 可能让每个安装目录模型继承不同的最终协议，而公开模型信息并不暴露该协议；插件因此会安全跳过该路由，不进行猜测。Responses、Anthropic Messages 等其他协议仍不在本插件范围内。
+
 卸载：
 
 ```powershell
@@ -46,7 +48,10 @@ npx @deepseek-ai/dsh plugin --profile web remove dsh-provider-passport
 - 不读取用户文件、会话、提示词、工具数据或历史任务。
 - 密钥与自定义请求头只在内存中使用，不进入报告和日志。
 - 只给选中的模型写入实测所需的最小配置，其他模型保持不变。
+- 只有在可编辑设置中显式声明 `api: openai-completions` 的路由才可预检；协议无法证明和其他协议的路由会显示为安全跳过。
+- 建议严格限定为 `maxTokensField`、`supportsDeveloperRole`、`supportsStore`、`supportsReasoningEffort` 与 `supportsUsageInStreaming`，绝不配置 Harness 目录标记为不可配置的字段。
 - 取消不会写配置；真实 Harness 复验失败会自动恢复原配置。
+- 如果 Harness 在原子配置校验中拒绝建议字段，插件会报告拒绝并保持设置不变。
 - **复制脱敏报告**会移除接口地址、模型名、密钥、请求头、请求文本、响应正文和模型输出；不会自动上传任何内容。
 
 测试企业内部接口前，请先阅读完整的[隐私设计](PRIVACY.md)。
@@ -63,7 +68,7 @@ npx @deepseek-ai/dsh plugin --profile web remove dsh-provider-passport
 
 ## 当前证据
 
-- 9 项自动测试覆盖脱敏、最小配置、取消、配置隔离和真实运行时验证。
+- 11 项自动测试覆盖脱敏、协议保护、可配置字段限制、最小配置、取消、配置隔离和真实运行时验证。
 - 同一打包插件已在发布时 npm 默认候选版 `0.1.1-rc.2` 与最新 alpha `0.1.2-alpha.4` 完成“安装 → 探测 → 应用 → 真实 Harness 复验 → 恢复”。
 - 确定性严格网关复现了三类“通用检查通过、默认 Harness 请求失败”的方言差异。
 - 已在真实 DSH Web UI 中人工检查设置卡片、确认、取消、应用、成功状态和回滚流程。
@@ -75,6 +80,8 @@ npx @deepseek-ai/dsh plugin --profile web remove dsh-provider-passport
 本项目不替代通用接口测试器、模型能力探测、健康监控、路由、回退或代理适配器；通用 API、流式、工具和结构化输出测试仍应使用 [CompatCanary](https://github.com/CognizenOrg/compatcanary) 等现有工具。
 
 本项目只负责自定义 OpenAI Chat Completions 接口与 Harness 请求方言之间的最后一公里。
+
+本预览版不会根据一次 Chat Completions 失败就猜测 `/v1/responses`、Anthropic Messages 或厂商路由。`blocked` 可能表示协议不同，也可能表示提供方管理的行为；插件只报告这个边界，不写入配置。多协议发现继续作为独立研究问题，避免本项目悄然变成另一套通用兼容测试器。
 
 ## 开发与贡献
 
